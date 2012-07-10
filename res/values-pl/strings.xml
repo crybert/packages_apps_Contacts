@@ -573,9 +573,18 @@
     <string name="t9_dial_click_title">Zadzwoń do wybranego kontaktu</string>
     <string name="t9_dial_click_summary">Zadzwoń do zaznaczonego kontaktu z wyszukiwania T9</string>
     <string name="t9_add_to_contacts">Dodaj do kontaktów</string>
-    <string name="display_options_view_mode">Sposób wyświetlania listy</string>
-    <string name="display_options_view_mode_standard">Widok standardowy</string>
-    <string name="display_options_view_mode_compact">Widok kompaktowy</string>
-    <string name="dialer_ui_orientation_title">Włącz czujnik orientacji</string>
-    <string name="dialer_ui_orientation_summary">Obracaj ekran wybierania numeru w oparciu o czujnik</string>
+    <string name="t9_map_row_2">2abcąàáâäåɑæçǽćčá</string>
+    <string name="t9_map_row_3">3defęéèêë</string>
+    <string name="t9_map_row_4">4ghiíìïîǵ</string>
+    <string name="t9_map_row_5">5jklłḱḱĺ</string>
+    <string name="t9_map_row_6">6mnoòóöôøñŋǿḿńő</string>
+    <string name="t9_map_row_7">7pqrsßɾṕŕśřš</string>
+    <string name="t9_map_row_8">8tuvúùüûű</string>
+    <string name="t9_map_row_9">9wxyzýẃźż</string>
+    
+    <!-- Dialer UI Settings -->
+    <string name="dialer_ui_title">Wybieranie numeru</string>
+    <string name="dialer_ui_orientation_title">Autoobracanie ekranu</string>
+    <string name="dialer_ui_orientation_summary">Pozwól na automatyczny obrót ekranu</string>
+    <!-- **** CYANOGENMOD EDITS END **** -->
 </resources>
