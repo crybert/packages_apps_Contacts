@@ -211,6 +211,13 @@ public class DialpadFragment extends Fragment
 
     private boolean mWasEmptyBeforeTextChange;
 
+    /**
+     * This field is set to true while processing an incoming DIAL intent, in order to make sure
+     * that SpecialCharSequenceMgr actions can be triggered by user input but *not* by a
+     * tel: URI passed by some other app
+     */
+    private boolean mSkipSpecialCharSequenceHandling;
+
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         mWasEmptyBeforeTextChange = TextUtils.isEmpty(s);
     }
@@ -228,7 +235,11 @@ public class DialpadFragment extends Fragment
     }
 
     public void afterTextChanged(Editable input) {
-        if (SpecialCharSequenceMgr.handleChars(getActivity(), input.toString(), mDigits)) {
+        // When DTMF dialpad buttons are being pressed, we delay SpecialCharSequencMgr sequence,
+        // since some of SpecialCharSequenceMgr's behavior is too abrupt for the "touch-down"
+        // behavior.
+        if (!mSkipSpecialCharSequenceHandling &&
+                SpecialCharSequenceMgr.handleChars(getActivity(), input.toString(), mDigits)) {
             // A special sequence was entered, clear the digits
             mDigits.getText().clear();
         }
@@ -488,17 +499,29 @@ public class DialpadFragment extends Fragment
         showDialpadChooser(needToShowDialpadChooser);
     }
 
+    /**
+     * Sets formatted digits to digits field.
+     *
+     * Watch out: this method assumes it is used only for loading the digits widget based on data
+     * in a DIAL or VIEW intent, and *not* ever called for digits typed by the user.
+     */
     private void setFormattedDigits(String data, String normalizedNumber) {
-        // strip the non-dialable numbers out of the data string.
-        String dialString = PhoneNumberUtils.extractNetworkPortion(data);
-        dialString =
-                PhoneNumberUtils.formatNumber(dialString, normalizedNumber, mCurrentCountryIso);
-        if (!TextUtils.isEmpty(dialString)) {
-            Editable digits = mDigits.getText();
-            digits.replace(0, digits.length(), dialString);
-            // for some reason this isn't getting called in the digits.replace call above..
-            // but in any case, this will make sure the background drawable looks right
-            afterTextChanged(digits);
+        try {
+            mSkipSpecialCharSequenceHandling = true;
+
+            // strip the non-dialable numbers out of the data string.
+            String dialString = PhoneNumberUtils.extractNetworkPortion(data);
+            dialString =
+                    PhoneNumberUtils.formatNumber(dialString, normalizedNumber, mCurrentCountryIso);
+            if (!TextUtils.isEmpty(dialString)) {
+                Editable digits = mDigits.getText();
+                digits.replace(0, digits.length(), dialString);
+                // for some reason this isn't getting called in the digits.replace call above..
+                // but in any case, this will make sure the background drawable looks right
+                afterTextChanged(digits);
+            }
+        } finally {
+            mSkipSpecialCharSequenceHandling = false;
         }
     }
 
